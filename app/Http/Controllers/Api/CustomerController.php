@@ -24,8 +24,7 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'name' => 'required|string|max:255|unique:users,name',
             'password' => 'required|min:6',
             'phone' => 'required|max:15',
             'address' => 'required'
@@ -33,17 +32,18 @@ class CustomerController extends Controller
 
         // Buat user
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name' => trim($validated['name']),
             'password' => bcrypt($validated['password']),
-            'role' => 'customer'
+            'role' => 'customer',
+            'phone' => trim($validated['phone']),
+            'address' => trim($validated['address']),
         ]);
 
         // Buat customer profile
         $customer = Customer::create([
             'user_id' => $user->id,
-            'phone' => $validated['phone'],
-            'address' => $validated['address']
+            'phone' => trim($validated['phone']),
+            'address' => trim($validated['address'])
         ]);
 
         return response()->json([
@@ -68,22 +68,22 @@ class CustomerController extends Controller
         $customer = Customer::with('user')->findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $customer->user_id,
+            'name' => 'required|string|max:255|unique:users,name,' . $customer->user_id,
             'phone' => 'required|max:15',
             'address' => 'required'
         ]);
 
         // Update user
         $customer->user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email']
+            'name' => trim($validated['name']),
+            'phone' => trim($validated['phone']),
+            'address' => trim($validated['address']),
         ]);
 
         // Update customer
         $customer->update([
-            'phone' => $validated['phone'],
-            'address' => $validated['address']
+            'phone' => trim($validated['phone']),
+            'address' => trim($validated['address'])
         ]);
 
         return response()->json([

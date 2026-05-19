@@ -96,4 +96,9 @@ Route::middleware([
         TransactionController::class,
         'history'
     ]);
+
+    Route::get('/transaction/{id}', [
+    TransactionController::class,
+    'show'
+]);
 });

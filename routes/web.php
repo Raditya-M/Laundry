@@ -2,40 +2,28 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes — LaundryPOS Admin
-|--------------------------------------------------------------------------
-*/
-
-// Login
 Route::get('/', function () {
-    return view('pages.login');
+    return view('auth.login');
 })->name('login');
 
-// Dashboard
 Route::get('/dashboard', function () {
-    return view('pages.dashboard');
+    return view('dashboard');
 })->name('dashboard');
 
-// Services
 Route::get('/services', function () {
-    return view('pages.services');
+    return view('services.index');
 })->name('services');
 
-// Customers
 Route::get('/customers', function () {
-    return view('pages.customers');
+    return view('customers.index');
 })->name('customers');
 
-// Transactions
 Route::get('/transactions', function () {
-    return view('pages.transactions');
+    return view('transactions.index');
 })->name('transactions');
 
-// Reports
 Route::get('/reports', function () {
-    return view('pages.reports');
+    return view('reports.index');
 })->name('reports');
 
 // Redirect any unknown page to login

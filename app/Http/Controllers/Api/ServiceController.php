@@ -19,9 +19,9 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'service_name' => 'required|in:kiloan,satuan',
+            'service_name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'unit' => 'required|string|max:20'
+            'unit' => 'required|in:kg,pcs',
         ]);
 
         $service = Service::create($validated);
@@ -48,9 +48,9 @@ class ServiceController extends Controller
         $service = Service::findOrFail($id);
 
         $validated = $request->validate([
-            'service_name' => 'required|in:kiloan,satuan',
+            'service_name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'unit' => 'required|string|max:20'
+            'unit' => 'required|in:kg,pcs',
         ]);
 
         $service->update($validated);

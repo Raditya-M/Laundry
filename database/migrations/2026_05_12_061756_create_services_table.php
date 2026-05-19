@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->enum('service_name', ['kiloan', 'satuan']);
+            $table->string('service_name');
             $table->decimal('price', 10, 2);
-            $table->string('unit', 20);
+            $table->enum('unit', ['kg', 'pcs']);
             $table->timestamps();
         });
     }

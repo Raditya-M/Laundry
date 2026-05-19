@@ -68,22 +68,43 @@ class TransactionController extends Controller
             'total_price' => $totalPrice,
             'status' => 'antrian',
             'payment_method' => $validated['payment_method'],
-            'payment_status' =>
-                $validated['payment_method'] === 'cash'
-                    ? 'paid'
-                    : 'pending',
+            'payment_status' => 'paid',
             'payment_proof' => $paymentProof
                 ? asset('storage/' . $paymentProof)
                 : null,
-            'paid_at' =>
-                $validated['payment_method'] === 'cash'
-                    ? now()
-                    : null
+            'paid_at' => now(),
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Transaksi berhasil dibuat',
+            'data' => $transaction
+        ]);
+    }
+
+    public function show(Request $request, string $id)
+    {
+        $customer = Customer::where(
+            'user_id',
+            $request->user()->id
+        )->first();
+
+        $transaction = Transaction::with([
+            'service',
+            'customer.user'
+        ])
+        ->where('customer_id', $customer->id)
+        ->find($id);
+
+        if (!$transaction) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaksi tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
             'data' => $transaction
         ]);
     }
@@ -135,17 +156,20 @@ class TransactionController extends Controller
     // REPORT API
     public function incomeReport()
     {
-        $totalIncome = Transaction::where(
-            'payment_status',
-            'paid'
-        )->sum('total_price');
-
-        $totalTransaction = Transaction::count();
+        $reports = Transaction::selectRaw("
+                MONTH(created_at) as month_number,
+                MONTHNAME(created_at) as month,
+                SUM(total_price) as total,
+                COUNT(*) as total_transactions
+            ")
+            ->where('payment_status', 'paid')
+            ->groupBy('month_number', 'month')
+            ->orderBy('month_number')
+            ->get();
 
         return response()->json([
             'success' => true,
-            'total_income' => $totalIncome,
-            'total_transaction' => $totalTransaction
+            'data' => $reports
         ]);
     }
 
@@ -163,6 +187,10 @@ class TransactionController extends Controller
 
         $totalTransaction = Transaction::count();
 
+        $statusCounts = Transaction::selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
         return response()->json([
             'success' => true,
 
@@ -170,7 +198,9 @@ class TransactionController extends Controller
 
             'monthly_income' => $monthlyIncome,
 
-            'total_transaction' => $totalTransaction
+            'total_transaction' => $totalTransaction,
+
+            'status_counts' => $statusCounts
         ]);
     }
 
