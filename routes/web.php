@@ -26,6 +26,9 @@ Route::get('/reports', function () {
     return view('reports.index');
 })->name('reports');
 
+Route::view('/api-docs', 'api-docs')
+    ->name('api-docs');
+
 // Redirect any unknown page to login
 Route::fallback(function () {
     return redirect('/');

@@ -75,6 +75,24 @@ class TransactionController extends Controller
             'paid_at' => now(),
         ]);
 
+        // membership +5 hari
+        $customer = Customer::with('user')->find($validated['customer_id']);
+
+        if ($customer && $customer->user) {
+
+            $expired = $customer->user->membership_expired_at;
+
+            // kalau membership udah expired → mulai dari sekarang
+            $baseDate = $expired && now()->lt($expired)
+                ? $expired
+                : now();
+
+            $customer->user->update([
+                'is_member' => true,
+                'membership_expired_at' => $baseDate->copy()->addDays(5)
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Transaksi berhasil dibuat',
@@ -130,7 +148,7 @@ class TransactionController extends Controller
 
     public function statusLaundry(Request $request)
     {
-        $customer = Customer::where('user_id', $request->user()->id())->first();
+        $customer = Customer::where('user_id', $request->user()->id)->first();
 
         if (!$customer) {
             return response()->json([
@@ -219,6 +237,34 @@ class TransactionController extends Controller
         return response()->json([
             'success' => true,
             'data' => $transactions
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        // hapus bukti pembayaran kalau ada
+        if ($transaction->payment_proof) {
+
+            $path = public_path(
+                str_replace(
+                    url('/'),
+                    '',
+                    $transaction->payment_proof
+                )
+            );
+
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
+
+        $transaction->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaksi berhasil dihapus'
         ]);
     }
 }

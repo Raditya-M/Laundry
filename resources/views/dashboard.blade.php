@@ -137,7 +137,7 @@ async function loadRecentTransactions() {
             <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                 <td class="px-6 py-3.5">
                     <p class="font-medium text-slate-700">
-                        ${t.customer?.user?.name ?? '—'}
+                        ${t.customer?.user?.username ?? '—'}
                     </p>
                 </td>
 

@@ -122,7 +122,7 @@
     class="fixed inset-0 z-50 hidden bg-black/70 flex items-center justify-center p-4">
 
     <div class="relative max-w-3xl w-full">
-        
+
         <button onclick="closeProofModal()"
             class="absolute -top-12 right-0 text-white text-2xl hover:text-slate-300">
             <i class="fa-solid fa-times"></i>
@@ -164,7 +164,7 @@ async function loadTransactions() {
         document.getElementById('trxTable').innerHTML = trxs.map((t, i) => `
             <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                 <td class="px-6 py-3.5 text-slate-400 text-xs font-mono">${i+1}</td>
-                <td class="px-6 py-3.5 font-medium text-slate-700">${t.customer?.user?.name ?? '—'}</td>
+                <td class="px-6 py-3.5 font-medium text-slate-700">${t.customer?.user?.username ?? '—'}</td>
                 <td class="px-6 py-3.5 text-slate-500 text-xs">${t.service?.service_name ?? '—'}</td>
                 <td class="px-6 py-3.5 text-slate-500 font-mono">${formatWeight(t.weight, t.service?.unit)}</td>
                 <td class="px-6 py-3.5 font-mono font-medium text-primary-600">${formatRupiah(t.total_price)}</td>
@@ -178,10 +178,15 @@ async function loadTransactions() {
                                 <i class="fa-solid fa-receipt"></i> Bukti
                             </button>
                         ` : ''}
-                        
+
                         <button onclick="openStatusModal(${t.id}, '${t.status}')"
                             class="text-xs text-indigo-500 hover:text-indigo-700 font-medium px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition">
                             <i class="fa-solid fa-arrow-up-right-dots"></i> Status
+                        </button>
+
+                        <button onclick="deleteTransaction(${t.id})"
+                            class="text-xs text-red-500 hover:text-red-700 font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition">
+                            <i class="fa-solid fa-trash"></i> Hapus
                         </button>
                     </div>
                 </td>
@@ -208,7 +213,7 @@ async function loadCustomersForTrx() {
         sel.innerHTML = '<option value="">Pilih pelanggan...</option>' +
             customers.map(c => `
                 <option value="${c.id}">
-                    ${c.user?.name ?? 'Tanpa Nama'}
+                    ${c.user?.username ?? 'Tanpa Nama'}
                 </option>
             `).join('');
     } catch(e) {}
@@ -249,7 +254,7 @@ async function saveTrx() {
     try {
         const token = localStorage.getItem('laundry_token');
 
-        const response = await fetch('http://172.16.0.53:8000/api/transactions', {
+        const response = await fetch('http://172.16.0.65:8000/api/transactions', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -337,6 +342,35 @@ function openProofModal(image) {
 
 function closeProofModal() {
     document.getElementById('proofModal').classList.add('hidden');
+}
+
+async function deleteTransaction(id) {
+
+    if (!confirm('Yakin ingin menghapus transaksi ini?')) {
+        return;
+    }
+
+    try {
+
+        await apiFetch(
+            `/transactions/${id}`,
+            'DELETE'
+        );
+
+        showToast(
+            'Transaksi berhasil dihapus',
+            'success'
+        );
+
+        loadTransactions();
+
+    } catch (e) {
+
+        showToast(
+            e.message,
+            'error'
+        );
+    }
 }
 </script>
 @endpush

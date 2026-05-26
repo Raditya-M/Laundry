@@ -12,10 +12,13 @@ use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable([
     'name',
+    'username',
     'password',
     'role',
     'phone',
-    'address'
+    'address',
+    'is_member',
+    'membership_expired_at'
 ])]
 
 #[Hidden([
@@ -33,7 +36,15 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'membership_expired_at' => 'datetime',
         ];
+    }
+
+    public function getMembershipActiveAttribute()
+    {
+        return $this->is_member &&
+            $this->membership_expired_at &&
+            now()->lt($this->membership_expired_at);
     }
 
     // Relasi customer profile

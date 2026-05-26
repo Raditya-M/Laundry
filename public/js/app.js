@@ -2,7 +2,7 @@
 // LaundryPOS — Global JS Utilities
 // ============================================================
 
-const API_BASE = 'http://172.16.0.53:8000/api';
+const API_BASE = 'http://172.16.0.65:8000/api';
 
 // ── Auth Guards ──────────────────────────────────────────────
 function checkAuth() {

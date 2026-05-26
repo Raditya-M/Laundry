@@ -6,99 +6,135 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\CustomerController;
 
-Route::post('/login', [AuthController::class, 'login']);
+/*
+|--------------------------------------------------------------------------
+| PUBLIC
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/login', [
+    AuthController::class,
+    'login'
+]);
+
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/profile', [AuthController::class, 'profile']);
-
-    Route::post('/logout', [AuthController::class, 'logout']);
-
-    // SERVICE CRUD
-    Route::apiResource('services', ServiceController::class);
-
-    // TRANSACTION
-    Route::post('/transactions', [
-        TransactionController::class,
-        'store'
+    Route::get('/profile', [
+        AuthController::class,
+        'profile'
     ]);
 
-    Route::put('/transactions/{id}/status', [
-        TransactionController::class,
-        'updateStatus'
+    Route::post('/logout', [
+        AuthController::class,
+        'logout'
     ]);
-
-    Route::get('/status-laundry', [
-        TransactionController::class,
-        'statusLaundry'
-    ]);
-
-    // REPORT API
-    Route::get('/report-income', [
-        TransactionController::class,
-        'incomeReport'
-    ]);
-
-    Route::apiResource('customers', CustomerController::class);
 });
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware([
     'auth:sanctum',
     'role:admin'
 ])->group(function () {
 
+    /*
+    |--------------------------------------------------------------------------
+    | SERVICES
+    |--------------------------------------------------------------------------
+    */
+
     Route::apiResource('services', ServiceController::class);
+
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOMERS
+    |--------------------------------------------------------------------------
+    */
 
     Route::apiResource('customers', CustomerController::class);
 
-    // LIST TRANSACTION
+    /*
+    |--------------------------------------------------------------------------
+    | TRANSACTIONS
+    |--------------------------------------------------------------------------
+    */
+
+    // list transaksi
     Route::get('/transactions', [
         TransactionController::class,
         'index'
     ]);
 
-    // CREATE TRANSACTION
+    // buat transaksi
     Route::post('/transactions', [
         TransactionController::class,
         'store'
     ]);
 
-    // UPDATE STATUS
+    Route::delete('/transactions/{id}', [
+        TransactionController::class,
+        'destroy'
+    ]);
+
+    // update status laundry
     Route::put('/transactions/{id}/status', [
         TransactionController::class,
         'updateStatus'
     ]);
 
-    // REPORT
+    /*
+    |--------------------------------------------------------------------------
+    | REPORT
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/report-income', [
         TransactionController::class,
         'incomeReport'
     ]);
 
-    // STATISTICS
     Route::get('/statistics', [
         TransactionController::class,
         'statistics'
     ]);
 });
 
+/*
+|--------------------------------------------------------------------------
+| CUSTOMER
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware([
     'auth:sanctum',
     'role:customer'
 ])->group(function () {
 
+    // status laundry customer
     Route::get('/status-laundry', [
         TransactionController::class,
         'statusLaundry'
     ]);
 
+    // history transaksi
     Route::get('/history', [
         TransactionController::class,
         'history'
     ]);
 
-    Route::get('/transaction/{id}', [
-    TransactionController::class,
-    'show'
-]);
+    // detail transaksi
+    Route::get('/transactions/{id}', [
+        TransactionController::class,
+        'show'
+    ]);
 });

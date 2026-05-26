@@ -34,6 +34,14 @@
             <span class="text-sm">Laporan</span>
         </a>
 
+        <a href="{{ route('api-docs') }}"
+           class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 font-medium {{ request()->routeIs('api-docs') ? 'active' : '' }}">
+            <i class="fa-solid fa-code w-4 text-slate-400 text-sm"></i>
+            <span class="text-sm">
+                API Docs
+            </span>
+        </a>
+
         <div class="pt-4">
             <p class="text-[10px] font-600 text-slate-400 uppercase tracking-widest px-3 py-2 font-display">Akun</p>
             <button onclick="doLogout()" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-red-50 hover:text-red-500 group">

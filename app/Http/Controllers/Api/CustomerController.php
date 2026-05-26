@@ -24,7 +24,8 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:users,name',
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|min:6',
             'phone' => 'required|max:15',
             'address' => 'required'
@@ -33,6 +34,7 @@ class CustomerController extends Controller
         // Buat user
         $user = User::create([
             'name' => trim($validated['name']),
+            'username' => trim($validated['username']),
             'password' => bcrypt($validated['password']),
             'role' => 'customer',
             'phone' => trim($validated['phone']),
@@ -68,7 +70,8 @@ class CustomerController extends Controller
         $customer = Customer::with('user')->findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:users,name,' . $customer->user_id,
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $customer->user_id,
             'phone' => 'required|max:15',
             'address' => 'required'
         ]);
@@ -76,6 +79,7 @@ class CustomerController extends Controller
         // Update user
         $customer->user->update([
             'name' => trim($validated['name']),
+            'username' => trim($validated['username']),
             'phone' => trim($validated['phone']),
             'address' => trim($validated['address']),
         ]);

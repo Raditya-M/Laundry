@@ -189,7 +189,7 @@
     </div>
 
     <script>
-        const API_BASE = 'http://172.16.0.53:8000/api';
+        const API_BASE = 'http://172.16.0.65:8000/api';
 
         if (localStorage.getItem('laundry_token')) {
             window.location.href = '/dashboard';
@@ -222,8 +222,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({
-                        // DIUBAH: Mengambil nilai dari loginName dengan key JSON 'name'
-                        name: document.getElementById('loginName').value,
+                        username: document.getElementById('loginName').value,
                         password: document.getElementById('loginPassword').value,
                     })
                 });
