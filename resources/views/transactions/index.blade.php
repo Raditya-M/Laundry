@@ -346,7 +346,21 @@ function closeProofModal() {
 
 async function deleteTransaction(id) {
 
-    if (!confirm('Yakin ingin menghapus transaksi ini?')) {
+    const result = await Swal.fire({
+        title: 'Hapus transaksi?',
+        text: 'Data transaksi yang dihapus tidak bisa dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#94a3b8',
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        background: '#fff',
+        borderRadius: '20px'
+    });
+
+    if (!result.isConfirmed) {
         return;
     }
 
@@ -357,19 +371,26 @@ async function deleteTransaction(id) {
             'DELETE'
         );
 
-        showToast(
-            'Transaksi berhasil dihapus',
-            'success'
-        );
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Transaksi berhasil dihapus',
+            timer: 1800,
+            showConfirmButton: false,
+            borderRadius: '20px'
+        });
 
         loadTransactions();
 
     } catch (e) {
 
-        showToast(
-            e.message,
-            'error'
-        );
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: e.message,
+            confirmButtonColor: '#ef4444',
+            borderRadius: '20px'
+        });
     }
 }
 </script>

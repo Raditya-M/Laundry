@@ -146,8 +146,11 @@ function closeModal() {
 }
 
 async function saveService() {
+
     const btn = document.getElementById('saveServiceBtn');
-    btn.disabled = true; btn.textContent = 'Menyimpan...';
+
+    btn.disabled = true;
+    btn.textContent = 'Menyimpan...';
 
     const payload = {
         service_name: document.getElementById('serviceName').value,
@@ -156,26 +159,110 @@ async function saveService() {
     };
 
     try {
+
         if (editingId) {
-            await apiFetch(`/services/${editingId}`, 'PUT', payload);
-            showToast('Layanan berhasil diperbarui', 'success');
+
+            await apiFetch(
+                `/services/${editingId}`,
+                'PUT',
+                payload
+            );
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Layanan berhasil diperbarui',
+                timer: 1800,
+                showConfirmButton: false,
+                borderRadius: '20px'
+            });
+
         } else {
-            await apiFetch('/services', 'POST', payload);
-            showToast('Layanan berhasil ditambahkan', 'success');
+
+            await apiFetch(
+                '/services',
+                'POST',
+                payload
+            );
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Layanan berhasil ditambahkan',
+                timer: 1800,
+                showConfirmButton: false,
+                borderRadius: '20px'
+            });
         }
+
         closeModal();
         loadServices();
-    } catch(e) { showToast(e.message, 'error'); }
-    finally { btn.disabled = false; btn.textContent = 'Simpan'; }
+
+    } catch(e) {
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: e.message,
+            confirmButtonColor: '#ef4444',
+            borderRadius: '20px'
+        });
+
+    } finally {
+
+        btn.disabled = false;
+        btn.textContent = 'Simpan';
+    }
 }
 
 async function deleteService(id) {
-    if (!confirm('Hapus layanan ini?')) return;
+
+    const result = await Swal.fire({
+        title: 'Hapus layanan?',
+        text: 'Layanan yang dihapus tidak bisa dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#94a3b8',
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        background: '#fff',
+        borderRadius: '20px'
+    });
+
+    if (!result.isConfirmed) {
+        return;
+    }
+
     try {
-        await apiFetch(`/services/${id}`, 'DELETE');
-        showToast('Layanan dihapus', 'success');
+
+        await apiFetch(
+            `/services/${id}`,
+            'DELETE'
+        );
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Layanan berhasil dihapus',
+            timer: 1800,
+            showConfirmButton: false,
+            borderRadius: '20px'
+        });
+
         loadServices();
-    } catch(e) { showToast(e.message, 'error'); }
+
+    } catch(e) {
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: e.message,
+            confirmButtonColor: '#ef4444',
+            borderRadius: '20px'
+        });
+    }
 }
 </script>
 @endpush

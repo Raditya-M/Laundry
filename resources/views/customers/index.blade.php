@@ -413,10 +413,14 @@ async function saveCustomer() {
                 payload
             );
 
-            showToast(
-                'Pelanggan berhasil diperbarui',
-                'success'
-            );
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Pelanggan berhasil diperbarui',
+                timer: 1800,
+                showConfirmButton: false,
+                borderRadius: '20px'
+            });
 
         } else {
 
@@ -426,10 +430,14 @@ async function saveCustomer() {
                 payload
             );
 
-            showToast(
-                'Pelanggan berhasil ditambahkan',
-                'success'
-            );
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Pelanggan berhasil ditambahkan',
+                timer: 1800,
+                showConfirmButton: false,
+                borderRadius: '20px'
+            });
         }
 
         closeCustModal();
@@ -438,7 +446,13 @@ async function saveCustomer() {
 
     } catch (e) {
 
-        showToast(e.message, 'error');
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: e.message,
+            confirmButtonColor: '#ef4444',
+            borderRadius: '20px'
+        });
 
     } finally {
 
@@ -450,7 +464,21 @@ async function saveCustomer() {
 
 async function deleteCustomer(id) {
 
-    if (!confirm('Hapus pelanggan ini?')) {
+    const result = await Swal.fire({
+        title: 'Hapus pelanggan?',
+        text: 'Data pelanggan yang dihapus tidak bisa dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#94a3b8',
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        background: '#fff',
+        borderRadius: '20px'
+    });
+
+    if (!result.isConfirmed) {
         return;
     }
 
@@ -461,16 +489,26 @@ async function deleteCustomer(id) {
             'DELETE'
         );
 
-        showToast(
-            'Pelanggan dihapus',
-            'success'
-        );
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Pelanggan berhasil dihapus',
+            timer: 1800,
+            showConfirmButton: false,
+            borderRadius: '20px'
+        });
 
         loadCustomers();
 
     } catch (e) {
 
-        showToast(e.message, 'error');
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: e.message,
+            confirmButtonColor: '#ef4444',
+            borderRadius: '20px'
+        });
     }
 }
 
