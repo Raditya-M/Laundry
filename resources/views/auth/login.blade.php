@@ -189,7 +189,7 @@
     </div>
 
     <script>
-        const API_BASE = 'http://172.16.0.65:8000/api';
+        const API_BASE = 'http://172.16.0.2:8000/api';
 
         if (localStorage.getItem('laundry_token')) {
             window.location.href = '/dashboard';

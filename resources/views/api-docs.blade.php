@@ -23,7 +23,7 @@
         <div class="mt-5 inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl text-sm font-mono">
             BASE URL:
             <span class="text-white">
-                http://172.16.0.65:8000/api
+                http://172.16.0.2:8000/api
             </span>
         </div>
 

@@ -254,7 +254,7 @@ async function saveTrx() {
     try {
         const token = localStorage.getItem('laundry_token');
 
-        const response = await fetch('http://172.16.0.65:8000/api/transactions', {
+        const response = await fetch('http://172.16.0.2:8000/api/transactions', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

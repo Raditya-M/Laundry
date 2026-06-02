@@ -143,12 +143,22 @@
                     Password
                 </label>
 
-                <input
-                    type="password"
-                    id="custPassword"
-                    placeholder="Min 6 karakter"
-                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm"
-                >
+                <div class="relative">
+                    <input
+                        type="password"
+                        id="custPassword"
+                        placeholder="Min 6 karakter"
+                        class="w-full border border-slate-200 rounded-xl px-4 py-2.5 pr-12 text-sm"
+                    >
+
+                    <button
+                        type="button"
+                        onclick="togglePassword()"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                        <i id="passwordIcon" class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
             </div>
 
             <div>
@@ -509,6 +519,27 @@ async function deleteCustomer(id) {
             confirmButtonColor: '#ef4444',
             borderRadius: '20px'
         });
+    }
+}
+
+function togglePassword() {
+
+    const input = document.getElementById('custPassword');
+    const icon = document.getElementById('passwordIcon');
+
+    if (input.type === 'password') {
+
+        input.type = 'text';
+
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+
+    } else {
+
+        input.type = 'password';
+
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
     }
 }
 
